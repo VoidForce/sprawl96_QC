@@ -1315,6 +1315,7 @@ float (entity who, vector dir_forward, vector dir_right) traceWall =
 
 void(float fwall, float rwall, float fvel, float rvel, float type) makeDodge =
 {
+	float success;
 	if (self.b_slide)
 		return;
 	if (self.engineflags & ENF_ADRENALINE_OFF)
@@ -1323,19 +1324,7 @@ void(float fwall, float rwall, float fvel, float rvel, float type) makeDodge =
 		return;
 	if (self.wall_jumps > 2) 
 		return;
-		
-// shift trail further into the past, so monsters looks confused
-	if (skill > 1)
-	{
-		self.trail++; 
-		self.trail_time = time + (1 - 0.5 * (skill - 2)); // 0.5 on skill 3, 1 second on skill 2
-	}
-	else if (skill < 2)
-	{
-		self.trail += 2; 
-		self.trail_time = time + 1;
-	}
-	
+			
 	if (self.flags & FL_ONGROUND || traceDown(self)) // on ground, slightly above ground
 	{
 		makevectors(self.angles);
@@ -1351,6 +1340,7 @@ void(float fwall, float rwall, float fvel, float rvel, float type) makeDodge =
 		if (self.weapon == IT_KATANA)
 			self.speedmodifier = 2;
 		self.wall_jumps++;
+		success = 1;
 	}
 	else 
 	{
@@ -1375,6 +1365,21 @@ void(float fwall, float rwall, float fvel, float rvel, float type) makeDodge =
 			if (self.weapon == IT_KATANA)
 				self.speedmodifier = 2;
 			self.wall_jumps++; // not met requirements increment fixed
+			success = 2;
+		}
+	}
+	if (success)
+	{
+		// shift trail further into the past, so monsters looks confused
+		if (skill > 1)
+		{
+			self.trail += success; 
+			self.trail_time = time + (1 - 0.5 * (skill - 2)); // 0.5 on skill 3, 1 second on skill 2
+		}
+		else if (skill < 2)
+		{
+			self.trail += 1 + success; 
+			self.trail_time = time + 1;
 		}
 	}
 };
