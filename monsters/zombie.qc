@@ -516,6 +516,8 @@ void(entity attacker, float take) zombie_pain =
 		// head was destroyed, blow up
 			T_RadiusDamage (self, self, 40, self);
 			sendMessageVec(findHeadPosition(self), TE_ROBOTHEAD_EXPLOSION); // particle effect
+			ThrowHeadGib ("progs/m_gib_02.mdl", [crandom() * 100, crandom() * 100, 200 + random() * 200], 0);
+			ThrowHeadGib ("progs/m_gib_04.mdl", [crandom() * 100, crandom() * 100, 200 + random() * 200], 0);
 		}
 		return;
 	}

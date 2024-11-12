@@ -453,7 +453,7 @@ void() hknight_die =
 		else
 		{
 			for (float i = 0; i < 5; i++)
-				ThrowHeadGib ("progs/smallgib_synth.mdl", self.lasthit_direction * (100 + random()*50) + [crandom() * 100, crandom() * 100, random() * 200], 0);
+				ThrowHeadGib ("progs/smallgib_synth.mdl", [crandom() * 100, crandom() * 100, 300 + random() * 200], 0);
 		}
 	}
 	else

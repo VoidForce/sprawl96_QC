@@ -621,9 +621,9 @@ void(entity attacker, float damage)	ogre_pain =
 		else
 			setmodel (self, "progs/ogre_headless.mdl");
 		setsize (self, '-32 -32 -24', '32 32 48');
-		ThrowHeadGib ("progs/m_gib_02.mdl", self.lasthit_direction * (300 + random()*100) + [crandom()* 200,crandom()* 200,random()* 200], 0);
-		ThrowHeadGib ("progs/m_gib_04.mdl", self.lasthit_direction * (300 + random()*100) + [crandom()* 200,crandom()* 200,random()* 200], 0);
-		ThrowHeadGib ("progs/m_gib_05.mdl", self.lasthit_direction * (300 + random()*100) + [crandom()* 200,crandom()* 200,random()* 200], 0);
+		ThrowHeadGib ("progs/m_gib_02.mdl", [crandom() * 100, crandom() * 100, 400 + random() * 300], 0);
+		ThrowHeadGib ("progs/m_gib_04.mdl", [crandom() * 100, crandom() * 100, 400 + random() * 300], 0);
+		ThrowHeadGib ("progs/m_gib_05.mdl", [crandom() * 100, crandom() * 100, 400 + random() * 300], 0);
 		sendMessageVec(findHeadPosition(self), TE_ROBOTHEAD_EXPLOSION); // particle effect
 		
 		if (self.health > OGRE_MINHP)
