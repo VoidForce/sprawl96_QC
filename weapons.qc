@@ -766,8 +766,8 @@ void() W_FirePistol =
 	//sendMessageVecVecFlag(start, dir, MF_PISTOL, TE_MUZZLE);
 // recoil
 	makePunch([3, 0, 0], [0, 0, 0], [0, 0, 0]);
-	addPunchVelocity(-20, 0, 0);
-	addShake(-60, 0, 0);
+	addPunchVelocity(-10, 0, 0);
+	addShake(-30, 0, 0);
 	//makePunch([8,0,0], [0,-4 + crandom()*2,0],[0,0,0]);
 };
 
@@ -854,9 +854,9 @@ void(float leftgun) W_FireSMG =
 	checkGrenadeCollision(dir, 8);
 
 	//punch_relaxtime
-	if (random() < 0.15)
+	if (random() < 0.05)
 		dirchange *= -1;
-	makePunch([0.5 + random()*1.5, 0.5, 2], [random() * dirchange, 0, 0], [0, 0, 0]); // 
+	makePunch([0.75 + random()*0.75, 0.5, 2], [random() * dirchange, 0, 0], [0, 0, 0]); // 
 	addPunchVelocity(0,crandom()*4,0);
 };
 
@@ -1060,7 +1060,7 @@ void() W_FireChaingun =
 	new_vel_z *= 0.5;
 	self.velocity += new_vel;
 	
-	makePunch([0, 0, 2], [0, 0, 0], [0, 0, 0]);
+	makePunch([1, 2, 4], [0, 0, 0], [0, 0, 0]);
 	//makePunch([2+random()*2, 0.5, 0], [crandom(), 0, 0], [0, 0, 0]); //crandom() * crandom() * 4
 	addPunchVelocity(crandom()*5,crandom()*5,0);
 	addShake(0,0,crandom()*50);
@@ -1209,9 +1209,9 @@ void() W_FireGrenade =
 	setorigin (missile, offsetWeapon(15,8,4)); // fixed grenades spawned inside walls
 	//missile.isgrenade = 1;
 	appendToList(missile);
-	makePunch([6, 0, 0], [0, 0, 0], [0, 0, 0]);
-	addPunchVelocity(-40,-20 + random()*20,0);
-	addShake(-60, 0, 0);
+	makePunch([4.5, 0, 0], [0, crandom()*4, 0], [0, 0, 0]);
+	addPunchVelocity(-30,-15 + random()*15,0);
+	addShake(-60, crandom()*40, 0);
 	missile.thinkA = AngleGrenade;
 	missile.nextthinkA = time + 0.1;
 	missile.thinkB = ChargeGrenade;
