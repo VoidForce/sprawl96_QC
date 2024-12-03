@@ -411,19 +411,19 @@ void() zombie_paind11	=[	$paind11,	zombie_paind12	] {setHead('6 0 23');}; //160
 void() zombie_paind12	=[	$paind12,	zombie_paind13	] {setHead('4 0 24');}; //161
 void() zombie_paind13	=[	$paind13,	zombie_run1	] 	  {setHead('3 0 24');}; //162
 
-void() zombie_paine1	=[	$paine1,	zombie_paine2	] {setHead('0 0 24');   //163
+void() zombie_paine1	=[	$paine1,	zombie_paine2	] {setHead('0 0 24');Think(0.02);   //163
 sound (self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);};
-void() zombie_paine2	=[	$paine2,	zombie_paine3	] {setHead('6 0 26');ai_pain(8);}; //164
-void() zombie_paine3	=[	$paine3,	zombie_paine4	] {setHead('5 0 26');ai_pain(5);}; //165
-void() zombie_paine4	=[	$paine4,	zombie_paine5	] {setHead('1 0 23');self.nextthink = time + 0.05; ai_pain(3);}; //166
-void() zombie_paine5	=[	$paine5,	zombie_paine6	] {setHead('-1 0 17');self.nextthink = time + 0.05;ai_pain(1);}; //167
-void() zombie_paine6	=[	$paine6,	zombie_paine7	] {setHead('-4 0 10');self.nextthink = time + 0.05;ai_pain(2);}; //168
-void() zombie_paine7	=[	$paine7,	zombie_paine8	] {setHead('-8 0 1');self.nextthink = time + 0.05;ai_pain(1);}; //169
-void() zombie_paine8	=[	$paine8,	zombie_paine9	] {setHead('-12 0 -6');self.nextthink = time + 0.05;ai_pain(1);}; //170
-void() zombie_paine9	=[	$paine9,	zombie_paine10	] {setHead('-15 0 -11');self.nextthink = time + 0.05;ai_pain(2);}; //171
-void() zombie_paine10	=[	$paine10,	zombie_paine11	] {setHead('-16 1 -17');				 //172
+void() zombie_paine2	=[	$paine2,	zombie_paine3	] {setHead('6 0 26');Think(0.025);ai_pain(8);}; //164
+void() zombie_paine3	=[	$paine3,	zombie_paine4	] {setHead('5 0 26');Think(0.05);ai_pain(5);}; //165
+void() zombie_paine4	=[	$paine4,	zombie_paine5	] {setHead('1 0 23');Think(0.05);ai_pain(3);}; //166
+void() zombie_paine5	=[	$paine5,	zombie_paine6	] {setHead('-1 0 17');Think(0.05);ai_pain(1);}; //167
+void() zombie_paine6	=[	$paine6,	zombie_paine7	] {setHead('-4 0 10');Think(0.05);ai_pain(2);}; //168
+void() zombie_paine7	=[	$paine7,	zombie_paine8	] {setHead('-8 0 1');Think(0.06);ai_pain(1);}; //169
+void() zombie_paine8	=[	$paine8,	zombie_paine9	] {setHead('-12 0 -6');Think(0.06);ai_pain(1);}; //170
+void() zombie_paine9	=[	$paine9,	zombie_paine10	] {setHead('-15 0 -11');Think(0.06);ai_pain(2);}; //171
+void() zombie_paine10	=[	$paine10,	zombie_paine11	] {setHead('-16 1 -17');Think(0.06);			 //172
 sound (self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);};
-void() zombie_paine11	=[	$paine11,	zombie_paine12	] {setHead('-16 1 -21'); self.nextthink = self.nextthink + 0.1;}; //173
+void() zombie_paine11	=[	$paine11,	zombie_paine12	] {setHead('-16 1 -21'); Think(0.1);}; //173
 void() zombie_paine12	=[	$paine12,	zombie_paine13	] {setHead('-16 1 -22');}; //174
 void() zombie_paine13	=[	$paine13,	zombie_paine14	] {setHead('-16 1 -22');self.solid = SOLID_SLIDEBOX;}; //175
 void() zombie_paine14	=[	$paine14,	zombie_paine15	] {setHead('-16 1 -22');}; //176
