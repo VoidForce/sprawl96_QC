@@ -344,38 +344,45 @@ void() armor_touch =
 		value = 50;
 		str = "You got the light armor\n";
 	}
-
-	if (self.classname == "item_armor2")
+	else if (self.classname == "item_armor2")
 	{
 		type = 2;
 		value = 100;
 		str = "You got the combat armor\n";
 	}
-
-	if (self.classname == "item_armorInv")
+	else if (self.classname == "item_armorInv")
 	{
 		type = 3;
 		value = 200;
 		str = "You got the assault armor\n";
 	}
+	
+	switch (type)
+	{
+		case 1:
+			if (other.armorvalue >= 100)
+				return;
+			
+			other.armorvalue += value;
+			other.armorvalue = min(100, other.armorvalue);
+			break;
+		case 2:
+			if (other.armorvalue >= 150)
+				return;
+			
+			other.armorvalue += value;
+			other.armorvalue = min(150, other.armorvalue);
+			break;
+		case 3:
+			if (other.armorvalue >= 200)
+				return;
+			
+			other.armorvalue = value;
+			break;
+		default:
+			break;
+	}
 
-	if (type == 1 || type == 2)
-	{
-		if (other.armorvalue >= 100)
-			return;
-	}
-	else if (type == 3)
-	{
-		if (other.armorvalue >= 200)
-			return;
-	}
-
-	if (type == 1)
-	{
-		other.armorvalue += value;
-		other.armorvalue = min(100, other.armorvalue);
-	}
-	else other.armorvalue = value;
 	other.items |= IT_ARMOR;
 
 	//sprint(other, "You got armor\n");
