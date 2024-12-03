@@ -1988,7 +1988,7 @@ void() PlayerPreThink =
 						velocity2d = normalize(velocity2d);
 						if (!(self.movementflags & MF_CROUCHINAIR))
 						{
-							boostspeed = 270;
+							boostspeed = 200 * self.speedmodifier;
 							addShake(-60,0,0);
 						}
 						else
