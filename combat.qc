@@ -291,7 +291,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	if (targ.classname == "monster_oldone" && damage < 9999)
 		return;
 
-	if (attacker.entity_type == TYPE_PLAYER && attacker != targ && !(targ.monsterflags & MFL_SHIELD))
+	if (attacker.entity_type == TYPE_PLAYER && attacker != targ)
 	{
 		if (dflags & DF_HEADSHOT && targ.monsterflags & MFL_HASHEAD)
 		{
@@ -405,9 +405,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		
 		if (targ.monsterflags & MFL_SHIELD && damage < 1000)
 		{
-			res = 2;
-			mit = 200;
-			save = 0;
+			res = 1;
+			mit = 100;
+			//save = 0;
 		}
 		else
 		{

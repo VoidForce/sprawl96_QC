@@ -490,7 +490,7 @@ void(entity attacker, float damage) shalrath_pain =
 void() shalrath_die =
 {
 // remove shield! it's important
-	remove(self.eA);
+	SUB_CallAsSelf(SUB_RemoveSoon,self.eA);
 	
 	dropAmmo(self.origin, DROP_ROCKETS, 6, 4, 2, 1);
 	dropAmmo(self.origin, DROP_CELLS, 4, 4, 4, 6);
