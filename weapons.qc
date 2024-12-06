@@ -1188,14 +1188,15 @@ void() W_FireGrenade =
 
 	makevectors	(self.v_angle + self.punchangle);
 	if (self.v_angle_x)
-		missile.velocity = v_forward*1200 + v_up * 100 + v_right * (-8); //+ crandom()*v_right*30 + crandom()*v_up*30
+		missile.velocity = v_forward*1200 + v_up * 75 + v_right * (-8); //+ crandom()*v_right*30 + crandom()*v_up*30
 	else
 	{
 		missile.velocity = aim(self, 10000);
 		missile.velocity = missile.velocity * 600;
 		missile.velocity_z = 200;
 	}
-
+	
+	missile.gravity = 0.75;
 	missile.avelocity = '0 25 50';
 	missile.angles = vectoangles(missile.velocity);
 	missile.touch = GrenadeTouch;
