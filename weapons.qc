@@ -584,6 +584,7 @@ void(float shotcount, vector dir, vector spread, float damage) FireBullets =
 //#define FBA_GRENADE 2
 #define FBA_IMPACT 8
 #define FBA_NOSHIELD_IMPACT 16
+#define FBA_FALLOFF 32
 //  DF_ALWAYSGIB 4
 
 void(vector dir, float offset_x, float offset_y, float damage, float penetration, float lflags) FireBulletAim =
@@ -592,6 +593,9 @@ void(vector dir, float offset_x, float offset_y, float damage, float penetration
 	vector src, head_origin;
 	float dflags;
 	float head_size_factor;
+	float falloffmod;
+	
+	falloffmod = 1;
 	
 	makevectors	(self.v_angle + self.punchangle);
 	
@@ -626,7 +630,11 @@ void(vector dir, float offset_x, float offset_y, float damage, float penetration
 					head_size_factor = trace_ent.head_size;
 					
 					if (distancetoray(src, direction, head_origin) < head_size_factor)
+					{
 						dflags |= DF_HEADSHOT;
+						falloffmod = (trace_fraction * 4) - 0.32;
+						falloffmod = lerp(1.0, 0.5, falloffmod);
+					}
 				}
 				
 				if (lflags & FBA_IMPACT)
@@ -659,9 +667,9 @@ void(vector dir, float offset_x, float offset_y, float damage, float penetration
 			trace_ent.lasthit_direction = direction;
 		// add damage
 			if (lflags & FBA_ISMULTIDAMAGE)
-				AddMultiDamage (trace_ent, damage, dflags);
+				AddMultiDamage (trace_ent, damage * falloffmod, dflags);
 			else
-				T_Damage (trace_ent, self, self, damage, dflags, penetration);
+				T_Damage (trace_ent, self, self, damage * falloffmod, dflags, penetration);
 		}
 		else
 		{
@@ -755,7 +763,7 @@ void() W_FirePistol =
 	makevectors(self.v_angle + self.punchangle);
 	dir = aim (self, 100000);
 //
-	FireBulletAim (dir, NULL_OFFSET, NULL_OFFSET, PISTOL_DAMAGE, PISTOL_PENETRATION, FBA_IMPACT);
+	FireBulletAim (dir, NULL_OFFSET, NULL_OFFSET, PISTOL_DAMAGE, PISTOL_PENETRATION, FBA_IMPACT | FBA_FALLOFF);
 	//ApplyMultiDamage ();
 
 // particle fx trace and muzzle flash
@@ -789,7 +797,7 @@ void() W_FireSuperShotgun =
 	ClearMultiDamage ();
 	for (i = 0; i < 14; i++)
 	{
-		lflag = FBA_ISMULTIDAMAGE; // means that we have to use ApplyMultiDamage after cycle
+		lflag = FBA_ISMULTIDAMAGE | FBA_FALLOFF; // means that we have to use ApplyMultiDamage after cycle
 		if (i > 2)
 			lflag |= FBA_IMPACT | FBA_NOSHIELD_IMPACT;
 
@@ -843,7 +851,7 @@ void(float leftgun) W_FireSMG =
 	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
 	
 	dir = aim (self, 100000);
-	FireBulletAim (dir, crandom()*0.02, crandom()*0.02, SMG_DAMAGE, SMG_PENETRATION, FBA_IMPACT);
+	FireBulletAim (dir, crandom()*0.02, crandom()*0.02, SMG_DAMAGE, SMG_PENETRATION, FBA_IMPACT | FBA_FALLOFF);
 	
 	if (leftgun)
 		start = offsetWeapon(34,-8,-4);
