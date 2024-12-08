@@ -1135,7 +1135,7 @@ void() SetMovementParams_Slide =
 {
 	self.current_acceleration = 0;
 	self.phys_acceleration = 0;
-	self.phys_friction = 0.85;
+	self.phys_friction = 0.75;
 };
 
 void() SetMovementParams_Crouchwalk =
