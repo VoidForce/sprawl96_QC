@@ -1330,6 +1330,7 @@ void() W_FireLightning =
 {
 	vector	org, direction, head_origin;
 	float dflags, damage;
+	float falloff;
 	
 	SuperDamageSound ();
 	// explode if under water
@@ -1392,20 +1393,29 @@ void() W_FireLightning =
 
 			trace_ent.lasthit_direction = direction;
 			trace_fraction *= 640;
-			if (trace_fraction < 128)
-				damage = SHOCK_DAMAGE_MIN;
-			else if (trace_fraction > 512)
-				damage = SHOCK_DAMAGE_MAX;
+			if (dflags & DF_HEADSHOT)
+				falloff = SHOCK_FALLOFF_COEFFICIENT_HEAD;
 			else
-				damage = lerp(SHOCK_DAMAGE_MIN, SHOCK_DAMAGE_MAX, (trace_fraction - 128) / 384);
+				falloff = SHOCK_FALLOFF_COEFFICIENT_BODY;
+			
+			if (trace_fraction < 128)
+				damage = SHOCK_DAMAGE;
+			else if (trace_fraction > 512)
+				damage = SHOCK_DAMAGE * falloff;
+			else
+				damage = lerp(SHOCK_DAMAGE, SHOCK_DAMAGE * falloff, (trace_fraction - 128) / 384);
+			
+			damage = ceil(damage);
 			T_Damage (trace_ent, self, self, damage, dflags, 1);
 		}
 		else
 			sendMessageImpact(trace_endpos, trace_plane_normal, IMPACT_SHOCK, VEC_ORIGIN); 
 	}
 	float amplitude;
-	amplitude = 1 - (rint(self.current_speed / 10) / 100); // 1 - speed/1000, rounded to x.xx
-	amplitude = max(0.3, amplitude);
+	// the faster we go, the less recoil is
+	amplitude = 1 - (rint(self.current_speed / 10) / 110); // 1 - speed/1000, rounded to x.xx
+	amplitude = max(0.1, amplitude);
+	amplitude *= 2; // reduced in v1.2
 	makePunch([random()*3 * amplitude, 0, 0], [randomsign() * random() * amplitude, randomsign() * 1.5 * amplitude, randomsign() * 3 * amplitude], [0, 0, 0]); // 
 };
 
