@@ -711,9 +711,9 @@ const float MFL_BOSS = 512;
 const float MFL_CONFUSED = 1024; // monster chase player's trail instead of origin
 const float MFL_SHIELD = 2048;
 const float MFL_PUSH_RESISTENT = 4096;
-const float MFL_FIENDTOUCH = 8192; // fiend only
 const float MFL_LOSTWEAPON = 8192; // ogre only
 const float MFL_SHAM_EXPLODE = 8192; // shambler only
+const float MFL_FIENDTOUCH = 8192; // fiend only
 
 //const float MFL_HASDRONE = 8192; // vore only
 
@@ -824,7 +824,7 @@ const armor_t A_SCRAG		= {0.0, 0,		0, 0,		0.0};
 const armor_t A_ZOMBIE		= {0.3, 2,		0.2, 1,		0.0};
 const armor_t A_OGRE		= {0.5, 4,		0.2, 1,		0.5};
 const armor_t A_HELLKNIGHT	= {0.6, 2,		0.3, 2,		0.2}; // the guy is a synth, so he his body can resist a lot of damage
-const armor_t A_FIEND		= {0.6, 2,		0.8, 30,	0.5};
+const armor_t A_FIEND		= {0.7, 2,		0.4, 2,		0.5};
 const armor_t A_VORE		= {0.4, 5,		0, 0,		0.5};
 const armor_t A_SHAMBLER	= {0.8, 5,		0.95, 50,	0.75};
 
@@ -848,9 +848,9 @@ const armor_t A_SHAMBLER	= {0.8, 5,		0.95, 50,	0.75};
 #define OGRE_MINHP			 50
 #define HELLKNIGHT_HEALTH	300
 #define HELLKNIGHT_HEAD		80
-#define FIEND_HEALTH		300
-#define FIEND_HEAD			50
-#define VORE_HEALTH			400
+#define FIEND_HEALTH		400
+#define FIEND_HEAD			150
+#define VORE_HEALTH			600
 #define SHAMBLER_HEALTH		800
 #define SHAMBLER_HEAD		350
 
