@@ -332,6 +332,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 				break;
 			case 3:
 				armortype = 0.5;
+				resdmg *= 1.3;
 				break;
 		}
 		if (targ.armorvalue > 100)
