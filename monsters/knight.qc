@@ -167,13 +167,16 @@ void()	knight_runatk1	=[	$runattack1, knight_runatk2	] {Think(0.04);setHead('2 1
 	else
 		sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 	
-	makevectors2 (self.angles);
-	self.origin_z = self.origin_z + 1;
-	self.velocity = v_forward * 500 + '0 0 150';
+	if (self.fB < time)
+	{
+		makevectors2 (self.angles);
+		self.origin_z = self.origin_z + 1;
+		self.velocity = v_forward * 500 + '0 0 150';
 
-	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
-	
+		if (self.flags & FL_ONGROUND)
+			self.flags = self.flags - FL_ONGROUND;
+		self.fB = time + (2 - (skill * 0.5)) ;
+	}
 	ai_charge(20);
 };
 
@@ -190,8 +193,8 @@ void()	knight_runatk11	=[	$runattack11,	knight_run1	]	  {Think(0.04);setHead('2 
 
 void()	knight_atk1	=[	$attackb1,		knight_atk2	] {
 	if (self.fA > time)
-		
-	Think(0.04);setHead('1 1 24');
+		Think(0.04);
+	setHead('1 1 24');
 	self.alpha = 1;							// 43
 	sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 	ai_charge(0);
