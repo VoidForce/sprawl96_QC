@@ -632,8 +632,24 @@ void(vector dir, float offset_x, float offset_y, float damage, float penetration
 					if (distancetoray(src, direction, head_origin) < head_size_factor)
 					{
 						dflags |= DF_HEADSHOT;
-						falloffmod = (trace_fraction * 4) - 0.32;
-						falloffmod = lerp(1.0, 0.5, falloffmod);
+						if (lflags & FBA_FALLOFF)
+						{
+							falloffmod = (trace_fraction * 4) - 0.32;
+							falloffmod = lerp(2.0, 0.5, falloffmod);
+						}
+						// ricochet sound when hitting the head
+						float r;
+						r = random();
+						// 30 % chance of playing a ricoshet sound, doesn't work for shotguns
+						if (r > 0.7 && !(lflags & FBA_ISMULTIDAMAGE))
+						{
+							if (r > 0.9)
+								sound (trace_ent, CHAN_AUTO, "weapons/ric1.wav", 1, ATTN_NORM);
+							else if (r < 0.8)
+								sound (trace_ent, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+							else
+								sound (trace_ent, CHAN_AUTO, "weapons/ric3.wav", 1, ATTN_NORM);
+						}
 					}
 				}
 				
@@ -797,7 +813,7 @@ void() W_FireSuperShotgun =
 	ClearMultiDamage ();
 	for (i = 0; i < 14; i++)
 	{
-		lflag = FBA_ISMULTIDAMAGE | FBA_FALLOFF; // means that we have to use ApplyMultiDamage after cycle
+		lflag = FBA_ISMULTIDAMAGE; // means that we have to use ApplyMultiDamage after cycle
 		if (i > 2)
 			lflag |= FBA_IMPACT | FBA_NOSHIELD_IMPACT;
 
@@ -1094,7 +1110,7 @@ void (entity who) traceGrenade =
 	if (who.monsterflags & MFL_HASHEAD)
 	{
 	// calculate if it's a headshot or not
-		if (distancetoray(self.origin, self.vA, findHeadPosition(who)) < who.head_size * 1.25)
+		if (distancetoray(self.origin, self.vA, findHeadPosition(who)) < who.head_size * 1.5)
 			dflags |= DF_HEADSHOT;
 	}
 	

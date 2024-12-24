@@ -787,7 +787,7 @@ enum monstertypes:int {
 };
 
 #define KATANA_DAMAGE			40
-#define PISTOL_DAMAGE			70
+#define PISTOL_DAMAGE			50
 #define PISTOL_PENETRATION		-0.4
 #define SMG_DAMAGE				15
 #define SMG_PENETRATION			0.5
