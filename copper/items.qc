@@ -530,6 +530,7 @@ void(entity e) target_items_setweapon =
 {
 	if (self.weapon)
 	{
+		e.sprawlflags |= SFL_NEEDTOSETSPEED;
 		if (self.weapon & e.items)
 			deployGun(e.weapon); //e.weapon = self.weapon;
 	}
