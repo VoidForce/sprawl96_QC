@@ -534,8 +534,8 @@ void(entity attacker, float take) zombie_pain =
 	r = random();
 	if (r < 0.25)
 		zombie_paina1 ();
-	else if (r <  0.5)
-		zombie_painb1 ();
+	//else if (r <  0.5) // this falling down annimation is too annoying
+	//	zombie_painb1 ();
 	else if (r <  0.75)
 		zombie_painc1 ();
 	else
