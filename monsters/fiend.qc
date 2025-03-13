@@ -145,10 +145,7 @@ void()	demon1_jump3	=[	$leap3,		demon1_jump4	] {setHead('13 3 37'); Think(0.075)
 void()	demon1_jump4	=[	$leap4,		demon1_jump5	] {setHead('11 3 38'); Think(0.075); self.velocity = self.vA; ai_face(); checkLeapStuck(); }; // 31
 void()	demon1_jump5	=[	$leap5,		demon1_jump6	] {setHead('13 3 37'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); }; // 32
 void()	demon1_jump6	=[	$leap6,		demon1_jump7	] {setHead('11 3 42'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); }; // 33
-void()	demon1_jump7	=[	$leap7,		demon1_jump8	] {setHead('11 3 42'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); 
-	self.touch = Demon_DamageTouch;
-	self.monsterflags |= MFL_FIENDTOUCH; // can we touch and deal damage? Yes we can!
-}; // 34
+void()	demon1_jump7	=[	$leap7,		demon1_jump8	] {setHead('11 3 42'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); self.touch = Demon_DamageTouch; }; // 34
 void()	demon1_jump8	=[ 	$leap8,		demon1_jump9	] {setHead('11 3 43'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); }; // 35
 void()	demon1_jump9	=[ 	$leap9,		demon1_jump10	] {setHead('12 3 42'); Think(0.075); self.velocity = self.vA; checkLeapStuck(); }; // 36
 void()	demon1_jump10	=[ 	$leap10,	demon1_jump11	] {setHead('20 3 35'); checkLeapStuck(); Think(3); };// 37
@@ -323,7 +320,7 @@ void(float side)	Demon_Melee =
 		return;
 		
     sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
-	T_Damage (self.enemy, self, self, 5 + random() * 3, 0);	
+	T_Damage (self.enemy, self, self, 10 + random() * 5, 0);	
 	
 	float skillmod;
 	
@@ -352,7 +349,7 @@ void(float side)	Demon_Melee =
 
 void() Demon_PushTouch =
 {
-	T_Damage (other, self, self, 5, NOFLAGS); 	
+	//T_Damage (other, self, self, 5, NOFLAGS); 	
 	
 	float skillmod;
 	if (skill < 2)
@@ -366,63 +363,23 @@ void() Demon_PushTouch =
 		skillmod = 1;
 	T_Push (other, self, 600*skillmod, 150*skillmod);
 };
-/*
+
 void()	Demon_DamageTouch =
 {
+// self.fB - leap damage cooldown, prevents looping instakills
 	local	float	leapdmg;
 
 	if (self.health <= 0)
 		return;
 	
-	if (!(other.takedamage))
+	if (other.takedamage)
 	{
-		self.think = demon1_run1;
-		self.nextthink = time + 0.1;
-		return;
-	}
-	
-	self.counter = 0;
-	leapdmg = 10 * skill;
-	T_Damage (other, self, self, leapdmg, NOFLAGS); 	
-	T_Push (other, self, 600, 150);
-	self.touch = SUB_Null;
-	
-	if (!checkbottom(self))
-	{
-		if (self.flags & FL_ONGROUND)
+		if (self.fB < time)
 		{
-			self.counter++;
-			if (self.counter > 3)
-			{
-				self.fA = time + 3.0;
-				self.counter = 0;
-				self.think = demon1_run1;
-				self.nextthink = time + 0.1;
-				return;
-			}
-			
-			self.think = demon1_jump1;
-			self.nextthink = time + 0.1;
+			leapdmg = 30 + 5*random();
+			T_Damage (other, self, self, leapdmg, NOFLAGS);
+			self.fB = time + 1;
 		}
-		return;	// not on ground yet
-	}
-
-	self.think = demon1_run1;
-	self.nextthink = time + 0.1;
-};
-*/
-void()	Demon_DamageTouch =
-{
-	local	float	leapdmg;
-
-	if (self.health <= 0)
-		return;
-	
-	if (other.takedamage && (self.monsterflags & MFL_FIENDTOUCH))
-	{
-		leapdmg = 30 + 5*random();
-		T_Damage (other, self, self, leapdmg, NOFLAGS); 	
-		self.monsterflags -= self.monsterflags & MFL_FIENDTOUCH;
 		self.counter = 0;
 		T_Push (other, self, 600, 150);
 	}
