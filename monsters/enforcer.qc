@@ -75,6 +75,41 @@ void (void() thinkst) Enforcer_CheckRefire =
 	self.think = thinkst;
 };
 
+void() shrapnel_touch =
+{
+	float dmg;
+	if (other == self.owner)
+		return;
+
+	if (other.solid == SOLID_TRIGGER)
+		return;	// trigger field, do nothing
+
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove(self);
+		return;
+	}
+	
+	// hit something that bleeds
+	if (other.takedamage)
+	{
+		//damage falloff, goes from 5 to 1 in one second after been fired
+		dmg = rint(lerp(5, 1, time - self.fA));
+		spawn_touchblood (9);
+		T_Damage (other, self, self.owner, dmg, 0);
+	}
+	else
+	{
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_SPIKE);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
+	}
+
+	remove(self);
+};
+
 void(vector org, vector dir) launchShrapnel = 
 { 
 	local entity shrapnel;
@@ -85,7 +120,7 @@ void(vector org, vector dir) launchShrapnel =
 	shrapnel.movetype = MOVETYPE_FLYMISSILE;
 	shrapnel.solid = SOLID_BBOX;
 	shrapnel.angles = vectoangles(dir);
-	shrapnel.touch = spike_touch;
+	shrapnel.touch = shrapnel_touch;
 	shrapnel.classname = "spike";
 	shrapnel.think = SUB_Remove;
 	shrapnel.nextthink = time + 6;
@@ -93,7 +128,7 @@ void(vector org, vector dir) launchShrapnel =
 	setsize(shrapnel, '0 0 0', '0 0 0');
 	setorigin(shrapnel, org);
 	shrapnel.velocity = dir * 1800;
-	//shrapnel.avelocity = [random() * 200, random() * 200, random() * 200];
+	shrapnel.fA = time; // used to calculate damage falloff
 };
 
 void() enforcer_fire =
