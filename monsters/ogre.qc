@@ -537,7 +537,7 @@ void()	ogre_painc5	=[	$painc5,	ogre_painc6	] {setHead('-4 -2 41');}; // 80
 void()	ogre_painc6	=[	$painc6,	ogre_run	] {setHead('2 4 40');}; // 81
 
 void()	ogre_paind1	=[	$paind1,	ogre_paind2	] {setHead('-12 2 44');}; // 82
-void()	ogre_paind2	=[	$paind2,	ogre_paind3	] {setHead('-15 2 39');ai_pain(10); OgreFirePain();}; // 83
+void()	ogre_paind2	=[	$paind2,	ogre_paind3	] {setHead('-15 2 39');ai_pain(10);}; // 83
 void()	ogre_paind3	=[	$paind3,	ogre_paind4	] {setHead('-18 2 27');ai_pain(9);}; // 84
 void()	ogre_paind4	=[	$paind4,	ogre_paind5	] {setHead('-15 2 19');ai_pain(4);}; // 85
 void()	ogre_paind5	=[	$paind5,	ogre_paind6	] {setHead('-12 1 17');}; // 86
