@@ -86,7 +86,7 @@ void(float offset) wizzard_fire =
 	start = self.origin + v_right * offset + '0 0 8';
 	dir = getPlayerPosition(self.enemy, 1);
 	dir = normalize (dir - start);
-	FireBullets (1, dir, '0.04 0.04 0', 4);
+	FireBullets (1, dir, '0.08 0.08 0', 4);
 	sendMessageVecVecFlag(start, trace_endpos, MF_SMG, TE_BULLETTRACE);
 };
 
