@@ -148,20 +148,20 @@ void()	knight_walk12	=[	$walk12,	knight_walk13	] {setHead('4 0 25');ai_walk(3);}
 void()	knight_walk13	=[	$walk13,	knight_walk14	] {setHead('3 0 25');ai_walk(4);}; // 66
 void()	knight_walk14	=[	$walk14,	knight_walk1	] {setHead('2 0 25');ai_walk(3);}; // 67
 
-void()	knight_run1	=[	$runb1,		knight_run2	] {Think(0.04);self.alpha = 0.4; setHead('10 -2 23'); // 10
+void()	knight_run1	=[	$runb1,		knight_run2	] {Think(0.06);self.alpha = 0.4; setHead('10 -2 23'); // 10
 	if (random() < 0.05)
 		sound (self, CHAN_VOICE, "knight/idle.wav", 1,  ATTN_IDLE);
 	ai_run(16);
 };
-void()	knight_run2	=[	$runb2,		knight_run3	] {Think(0.04);setHead('8 -2 23');ai_run(20);};  // 11
-void()	knight_run3	=[	$runb3,		knight_run4	] {Think(0.04);setHead('6 -2 24');ai_run(13);};  // 12
-void()	knight_run4	=[	$runb4,		knight_run5	] {Think(0.04);setHead('8 1 22');ai_run(7);};   // 13
-void()	knight_run5	=[	$runb5,		knight_run6	] {Think(0.04);setHead('9 2 23');ai_run(16);};  // 14
-void()	knight_run6	=[	$runb6,		knight_run7	] {Think(0.04);setHead('7 2 23');ai_run(20);};  // 15
-void()	knight_run7	=[	$runb7,		knight_run8	] {Think(0.04);setHead('7 0 24');ai_run(14);};  // 16
-void()	knight_run8	=[	$runb8,		knight_run1	] {Think(0.04);setHead('8 1 22');ai_run(6);};   // 17
+void()	knight_run2	=[	$runb2,		knight_run3	] {Think(0.05);setHead('8 -2 23');ai_run(20);};  // 11
+void()	knight_run3	=[	$runb3,		knight_run4	] {Think(0.05);setHead('6 -2 24');ai_run(13);};  // 12
+void()	knight_run4	=[	$runb4,		knight_run5	] {Think(0.05);setHead('8 1 22');ai_run(7);};   // 13
+void()	knight_run5	=[	$runb5,		knight_run6	] {Think(0.05);setHead('9 2 23');ai_run(16);};  // 14
+void()	knight_run6	=[	$runb6,		knight_run7	] {Think(0.05);setHead('7 2 23');ai_run(20);};  // 15
+void()	knight_run7	=[	$runb7,		knight_run8	] {Think(0.05);setHead('7 0 24');ai_run(14);};  // 16
+void()	knight_run8	=[	$runb8,		knight_run1	] {Think(0.05);setHead('8 1 22');ai_run(6);};   // 17
 
-void()	knight_runatk1	=[	$runattack1, knight_runatk2	] {Think(0.04);setHead('2 1 25');  // 18
+void()	knight_runatk1	=[	$runattack1, knight_runatk2	] {Think(0.05);setHead('2 1 25');  // 18
 	if (random() > 0.5)
 		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 	else
@@ -180,16 +180,16 @@ void()	knight_runatk1	=[	$runattack1, knight_runatk2	] {Think(0.04);setHead('2 1
 	ai_charge(20);
 };
 
-void()	knight_runatk2	=[	$runattack2,	knight_runatk3	] {Think(0.04);setHead('-2 9 23');ai_charge_side();};  // 19
-void()	knight_runatk3	=[	$runattack3,	knight_runatk4	] {Think(0.04);setHead('-2 8 21');ai_charge_side();};  // 20
-void()	knight_runatk4	=[	$runattack4,	knight_runatk5	] {Think(0.04);setHead('1 7 24');ai_charge_side();};  // 21
-void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {Think(0.04);setHead('5 10 23');ai_melee_side(1);knight_trail();self.alpha = 1;};   // 22
-void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {Think(0.04);setHead('9 -7 20');knight_trail();};   // 23
-void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {Think(0.04);setHead('8 -13 18');ai_melee_side(1);knight_trail();};   // 24
-void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {Think(0.04);setHead('5 -10 23');knight_trail();};   // 25
-void()	knight_runatk9	=[	$runattack9,	knight_runatk10	] {Think(0.04);setHead('2 -7 25');ai_melee_side(1);knight_trail();};   // 26
-void()	knight_runatk10	=[	$runattack10,	knight_runatk11	] {Think(0.04);setHead('2 -3 24');ai_charge_side();};  // 27
-void()	knight_runatk11	=[	$runattack11,	knight_run1	]	  {Think(0.04);setHead('2 0 23');ai_charge(10);self.alpha = 0.4;};     // 28
+void()	knight_runatk2	=[	$runattack2,	knight_runatk3	] {Think(0.05);setHead('-2 9 23');ai_charge_side();};  // 19
+void()	knight_runatk3	=[	$runattack3,	knight_runatk4	] {Think(0.05);setHead('-2 8 21');ai_charge_side();};  // 20
+void()	knight_runatk4	=[	$runattack4,	knight_runatk5	] {Think(0.05);setHead('1 7 24');ai_charge_side();};  // 21
+void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {Think(0.05);setHead('5 10 23');ai_melee_side(1);knight_trail();self.alpha = 1;};   // 22
+void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {Think(0.05);setHead('9 -7 20');knight_trail();};   // 23
+void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {Think(0.05);setHead('8 -13 18');ai_melee_side(1);knight_trail();};   // 24
+void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {Think(0.05);setHead('5 -10 23');knight_trail();};   // 25
+void()	knight_runatk9	=[	$runattack9,	knight_runatk10	] {Think(0.05);setHead('2 -7 25');ai_melee_side(1);knight_trail();};   // 26
+void()	knight_runatk10	=[	$runattack10,	knight_runatk11	] {Think(0.05);setHead('2 -3 24');ai_charge_side();};  // 27
+void()	knight_runatk11	=[	$runattack11,	knight_run1	]	  {Think(0.05);setHead('2 0 23');ai_charge(10);self.alpha = 0.4;};     // 28
 
 void()	knight_atk1	=[	$attackb1,		knight_atk2	] {
 	if (self.fA > time)
