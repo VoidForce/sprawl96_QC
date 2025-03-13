@@ -373,10 +373,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	// we do this by increasing penetration power by 80% (addition, not multiplication)
 		if (attacker.flags & FL_CLIENT)
 		{
-		// i'm gonna use res here for angles difference, it's ugly but who cares
-			res = anglemod(targ.angles_y - attacker.angles_y); //
 			if (!(targ.monsterflags & MFL_SHIELD))
 			{
+			// i'm gonna use res here for angles difference, it's ugly but who cares
+				res = anglemod(targ.angles_y - attacker.angles_y); //
 				if (res < 75 || res > 285)
 				{
 				// hit back
@@ -404,37 +404,28 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		if (penetration < 0)
 			penetration = 0;
 		
-		if (targ.monsterflags & MFL_SHIELD && damage < 1000)
+		if (dflags & DF_HEADSHOT)
 		{
-			res = 1;
-			mit = 100;
-			//save = 0;
+			res = armorstats.head_resistance * penetration;
+			mit = armorstats.head_mitigation * penetration;
 		}
 		else
-		{
-			if (dflags & DF_HEADSHOT)
+		{	
+			res = armorstats.body_resistance * penetration;
+			mit = armorstats.body_mitigation * penetration;
+		}
+		
+		if (dflags & DF_EXPLOSION)
+		{	
+			res = armorstats.explosives_resistance;
+			mit = 0;
+			if (skill > 2)
 			{
-				res = armorstats.head_resistance * penetration;
-				mit = armorstats.head_mitigation * penetration;
-			}
-			else
-			{	
-				res = armorstats.body_resistance * penetration;
-				mit = armorstats.body_mitigation * penetration;
-			}
-			
-			if ( dflags & DF_EXPLOSION)
-			{
-				res = armorstats.explosives_resistance;
-				mit = 0;
-				if (skill > 2)
-				{
-					res += 0.2;
-					res = min(0.9, res);
-				}
+				res += 0.2;
+				res = min(0.9, res);
 			}
 		}
-
+		
 		take -= mit * count;
 		if (take < save)
 			take = save;
@@ -501,11 +492,14 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		if (dflags & DF_HEADSHOT && targ.monsterflags & MFL_HASHEAD)
 		{
 			targ.health_head -= take;
-			if (dflags & DF_SHOCK)
-				targ.health -= rint(take);
-			else
-				targ.health -= rint(take * 0.6);
-				
+			
+			if (!(targ.monsterflags & MFL_SHIELD))
+			{
+				if (dflags & DF_SHOCK)
+					targ.health -= rint(take);
+				else
+					targ.health -= rint(take * 0.6);
+			}
 			targ.monsterflags |= MFL_PAIN_HEADSHOT;
 		}
 		else
@@ -684,6 +678,10 @@ void(entity inflictor, entity attacker, float damage, entity ignore, float radiu
 				points *= 0.25;
 			else if (head.flags & FL_MONSTER && !(attacker.flags & FL_CLIENT))
 				points *= 3;
+			
+			if (head.monsterflags & MFL_SHIELD)
+				dflags |= DF_HEADSHOT;
+
 			T_Damage (head, inflictor, attacker, points, dflags);
 			
 			if (pushaway != 0 && head.flags & FL_CLIENT) // divide by zero check here

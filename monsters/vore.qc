@@ -43,19 +43,7 @@ const vector SIZE_SHIELD = '32 32 48';
 const vector SIZE_NORMAL = '32 32 20';
 
 // SHIELD ----------------------------------------------------------
-void() shieldOn =
-{
-	if (self.health < 0)
-		return;
-	self.monsterflags |= MFL_SHIELD;
-	self.eA.frame = 1;
-	self.eA.effects |= EF_NOLERP;
-	self.eA.touch = pushAway;
-
-	setsize (self, VEC_HULL2_MIN, SIZE_SHIELD);
-};
-
-void(float timer) shieldOff =
+void() shieldDestroyed =
 {
 	if (self.health < 0)
 		return;
@@ -63,10 +51,6 @@ void(float timer) shieldOff =
 	self.monsterflags -= self.monsterflags & MFL_SHIELD;
 	self.eA.frame = 0;
 	self.eA.effects |= EF_NOLERP;
-	self.eA.touch = SUB_Null;
-
-	self.nextthinkA = time + timer;
-	self.thinkA = shieldOn;
 };
 
 // GRENADE -----------------------------------------------------------------------
@@ -273,7 +257,7 @@ void(vector org, entity ownr, float count = 1) explodeShrapnel =
 			shrapnel.nextthinkA = time + 0.2;
 			setmodel(shrapnel, "progs/shrapnel.mdl");
 			setsize(shrapnel, '0 0 0', '0 0 0');
-			shrapnel.scale = 2;
+			shrapnel.scale = 1.5;
 			setorigin(shrapnel, org);
 			shrapnel.velocity = dir * (1200 + crandom() * 600);
 			shrapnel.avelocity = [crandom()*100,crandom()*100,crandom()*100];
@@ -294,6 +278,7 @@ void() shrapnelSkinChange =
 void() shal_shrapnel_touch =
 {
 	vector direction;
+	float dmg, pen;
 	if (other.solid == SOLID_TRIGGER || self.skin == 7) // assuming our velocity is super low already
 		return;	// trigger field, do nothing
 	
@@ -316,7 +301,15 @@ void() shal_shrapnel_touch =
 				sendMessageImpact(self.origin, -direction, IMPACT_ROBOT, VEC_ORIGIN); 
 			else
 				sendMessageImpact(self.origin, -direction, IMPACT_FLESH, VEC_ORIGIN); 
-			T_Damage (other, self, self.owner, lerp(2, 20, vlen(self.velocity)/1000), 0);
+			
+			dmg = lerp(2, 20, vlen(self.velocity)/1000);
+			pen = 0;
+			if (self.owner.flags & FL_CLIENT)
+			{
+				dmg *= 10;
+				pen = -0.5;
+			}
+			T_Damage (other, self, self.owner, dmg, 0, pen);
 		}
 		remove(self);
 	}
@@ -386,7 +379,7 @@ void() shal_attack =
 	pos = getPlayerPosition(self.enemy, 2);
 	
 // shield stuff
-	shieldOff(5 - skill); // 4 seconds down
+	//shieldOff(5 - skill); // 4 seconds down
 	
 	// 0.87 sin 60
 	// 0.5 cos 60
@@ -480,8 +473,45 @@ void() shal_death7      =[      $death7,        decay    ] {};
 
 void(entity attacker, float damage) shalrath_pain =
 {
+	if (self.monsterflags & MFL_LOST_HEAD)
+	{
+		self.monsterflags -= self.monsterflags & (MFL_LOST_HEAD | MFL_SHIELD);
+		
+		setsize (self, VEC_HULL2_MIN, SIZE_NORMAL);
+		self.eA.frame = 0;
+		self.eA.effects |= EF_NOLERP;	
+		self.eA.think = SUB_RemoveSoon;
+		self.eA.nextthink = time + 1;
+		sound (self, CHAN_BODY, "shield_explode.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "shield_explode.wav", 1, ATTN_NORM);
+		shal_pain1();
+		self.pain_finished = time + 3;
+		
+		float delta;
+		float amplitude;
+		delta = vlen(self.enemy.origin - self.origin);
+		amplitude = lerp(350, 100, delta/768);
+		shakeViewRadius(self.origin, 768, [amplitude, amplitude * 0.4 * crandom(), amplitude * crandom()]);
+		sendMessageVecFlag(self.origin + '0 0 -20', 600, TE_SHOCKWAVE); // particle dust wave
+		sendMessageVec(self.origin, TE_EXPLOSION_PLASMA); // dynamic light
+		sendMessageVec(self.origin, TE_EXPLOSION); // dynamic light
+		T_RadiusDamagePlayer(self, self, 40, self, 512, 64);
+		T_Push(self.enemy, self, amplitude, 270);
+	
+		return;
+	}
+	
+	if (self.monsterflags & MFL_SHIELD && self.eA)
+	{
+		self.eA.fB = time + SHIELD_REGEN_DELAY;
+		self.eA.fC = time + 0.2; // skin change
+		self.eA.skin = 1;
+		return;
+	}
+	
 	if (self.pain_finished > time)
 		return;
+	
 	playPainSound("shalrath/pain.wav");
 	shal_pain1();
 	self.pain_finished = time + 3;
@@ -495,7 +525,7 @@ void() shalrath_die =
 	dropAmmo(self.origin, DROP_ROCKETS, 6, 4, 2, 1);
 	dropAmmo(self.origin, DROP_CELLS, 4, 4, 4, 6);
 	// check for gib
-	if (self.health < -90)
+	if (self.health < -90 || self.lasthit_damage > self.gib_threshold)
 	{
 		sendMessageVec(self.origin, TE_EXPLOSION); // before throwhead, which changes origin
 		ThrowHead ("progs/h_shal.mdl",  self.lasthit_damage);
@@ -536,11 +566,15 @@ void() monster_shalrath_spawn =
 	self.killstring = " couldn't survive the artillery strike\n";
 	self.health = VORE_HEALTH;
 	self.max_health = VORE_HEALTH;
-	self.monsterflags |= MFL_ROBOT | MFL_SHIELD;
+	self.head_size = 128; // any hit within the hitbox should count as a headshot (shield hit)
+	self.health_head = VORE_SHIELD;
+	self.health_head_max = VORE_SHIELD;
+	self.monsterflags |= MFL_ROBOT | MFL_SHIELD | MFL_HASHEAD;
 	self.monstertype = TYPE_VORE;
+	self.gib_threshold = 100;
 	self.th_stand = shal_stand;
 	self.th_walk = shal_walk1;
-	self.th_run = shal_run1;
+	self.th_run  = shal_run1;
 	self.th_die = shalrath_die;
 	self.th_pain = shalrath_pain;
 	self.th_missile = shal_attack;
@@ -548,13 +582,14 @@ void() monster_shalrath_spawn =
 	self.think = walkmonster_start;
 	self.nextthink = time + 0.1 + random ()*0.1;	
 	
+	// shield
 	self.eA = spawn();
 	self.eA.owner = self;
-	self.eA.solid = SOLID_TRIGGER;
-	self.eA.touch = pushAway;
+	self.eA.solid = SOLID_NOT;
 	self.eA.movetype = MOVETYPE_NOCLIP;
 	setmodel (self.eA, "progs/shalrath_shield.mdl");
-	setsize(self.eA, '-40 -40 -32', '40 40 40');
+	setsize(self.eA, VEC_ORIGIN, VEC_ORIGIN);
+	
 	setorigin(self.eA, self.origin);
 	self.eA.frame = 1;
 	self.eA.alpha = 0.1;
@@ -590,6 +625,7 @@ void() monster_shalrath =
 	precache_sound2 ("shalrath/idle.wav");
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
+	precache_sound ("shield_explode.wav");
 	precache_sound ("weapons/pl_explode.wav");
 	precache_sound ("weapons/f_grenade.wav");
 
@@ -603,38 +639,27 @@ void() monster_shalrath =
 
 void() updateShieldPosition =
 {
+	float pulse;
 	setorigin(self, self.owner.origin);
-	if (self.fA)
+	
+	if (time > self.fC)
 	{
-		if (self.alpha < 0.4)
-			self.alpha += 0.025;
-		else
-		{
-			self.fA = 0;
-			self.alpha = 0.4;
-		}
+		self.skin = 0;
+		if (time > self.fA)
+			self.fA = time + 2;
+		pulse = lerp(0, 0.3, self.fA - time);
+		self.alpha = pulse + lerp(0.1, 0.3, self.owner.health_head / self.owner.health_head_max);
 	}
-	else
+	else 
+		self.alpha = 0.8;
+	
+	if (self.fB < time && self.owner.monsterflags & MFL_HASHEAD)
 	{
-		if (self.alpha > 0.15)
-			self.alpha -= 0.025;
-		else
-		{
-			self.fA = 1;
-			self.alpha = 0.15;
-		}
+		self.owner.health_head += SHIELD_REGEN_BASE + skill * SHIELD_REGEN_SKILL; // shield regen value
+		if (self.owner.health_head > self.owner.health_head_max)
+			self.owner.health_head = self.owner.health_head_max;
 	}
 	
 	self.think = updateShieldPosition;
 	self.nextthink = time + 0.1;
 };
-
-void() pushAway = 
-{
-	if (!(other.flags & FL_CLIENT))
-		return;
-	
-	T_Push(other, self, 600, 200);
-	T_Damage (other, self, self, (skill + 1) * 10, 0);
-	other.pushback_time = time + 0.3;
-}

@@ -826,7 +826,7 @@ const armor_t A_ZOMBIE		= {0.3, 2,		0.2, 1,		0.0};
 const armor_t A_OGRE		= {0.5, 4,		0.2, 1,		0.5};
 const armor_t A_HELLKNIGHT	= {0.6, 2,		0.3, 2,		0.2}; // the guy is a synth, so he his body can resist a lot of damage
 const armor_t A_FIEND		= {0.7, 2,		0.4, 2,		0.5};
-const armor_t A_VORE		= {0.4, 5,		0, 0,		0.5};
+const armor_t A_VORE		= {0.1, 1,		0.2, 2,		0.75};
 const armor_t A_SHAMBLER	= {0.8, 5,		0.95, 50,	0.75};
 
 #define SOLDIER_HEALTH 		100
@@ -851,7 +851,11 @@ const armor_t A_SHAMBLER	= {0.8, 5,		0.95, 50,	0.75};
 #define HELLKNIGHT_HEAD		80
 #define FIEND_HEALTH		400
 #define FIEND_HEAD			150
-#define VORE_HEALTH			600
+#define VORE_HEALTH			200
+#define VORE_SHIELD			800
+#define SHIELD_REGEN_BASE	5
+#define SHIELD_REGEN_SKILL	3
+#define SHIELD_REGEN_DELAY	1.2
 #define SHAMBLER_HEALTH		800
 #define SHAMBLER_HEAD		350
 
