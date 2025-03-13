@@ -314,6 +314,7 @@ void(vector direction, float hitdistance) checkGrenadeCollision
 					{
 						head.think = GrenadeExplode;
 						head.nextthink = time;
+						explodeShrapnel(head.origin, head.owner, 12);
 					}
 					else if (head.sprawlflags & SFLP_OGRE)
 					{
@@ -402,7 +403,6 @@ vector() wall_velocity =
 void(vector org, vector vel, entity targ) SpawnMeatSpray =
 {
 	entity gib;
-
 	gib = spawn ();
 	gib.clip = CLIP_PROJECTILE;
 	gib.owner = self;
@@ -959,10 +959,16 @@ void() W_FireGauss =
 						sendMessageVec(trace_endpos, TE_EXPLOSION_PLASMA);
 						sendMessageImpact(trace_endpos, trace_ent.origin, IMPACT_SHIELD, VEC_ORIGIN); 
 					}
-					else if (trace_ent.monsterflags & MFL_ROBOT)
-						sendMessageImpact(trace_endpos, direction, IMPACT_GAUSS_ROBOT, VEC_ORIGIN); 
 					else 
-						sendMessageImpact(trace_endpos, direction, IMPACT_GAUSS_FLESH, VEC_ORIGIN); 
+					{
+						for (float i = 0; i < 3; i++)
+							SpawnMeatSpray(trace_ent.origin + [crandom() * 16, crandom() * 16, crandom() * 16], crandom() * 250 * v_forward + crandom() * 250 * v_right, trace_ent);
+
+						if (trace_ent.monsterflags & MFL_ROBOT)
+							sendMessageImpact(trace_endpos, direction, IMPACT_GAUSS_ROBOT, VEC_ORIGIN); 
+						else 
+							sendMessageImpact(trace_endpos, direction, IMPACT_GAUSS_FLESH, VEC_ORIGIN); 
+					}
 
 					trace_ent.lasthit_direction = direction;
 					if (trace_ent)
@@ -1069,6 +1075,7 @@ void() W_FireChaingun =
 	dir = aim (self, 100000);
 	FireBulletAim (dir, crandom()*0.02, crandom()*0.02, CHAINGUN_DAMAGE, CHAINGUN_PENETRATION, FBA_IMPACT | DF_ALWAYSGIB);
 	float r = random();
+	// TODO: should i rather spawn gibs in t_damage?
 	if (trace_ent.flags & FL_MONSTER && r > 0.66 && !(trace_ent.monsterflags & MFL_SHIELD))
 		SpawnMeatSpray(trace_ent.origin + [crandom() * 16, crandom() * 16, crandom() * 16], crandom() * 150 * v_right, trace_ent);
 	
